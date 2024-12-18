@@ -4,7 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 
@@ -38,12 +40,19 @@ public class SocialMediaController {
 
     //TODO: Process of getting all messages
     @GetMapping("/messages")
+    @ResponseBody
     public ResponseEntity<List<Message>> getAllMessages(){
-        List<Message> messages = messageService.getMessages();
+        List<Message> messages =messageService.getAllMessages();
         return new ResponseEntity<>(messages, HttpStatus.OK);
     }
 
     //TODO: Process of getting message by messageID
+    @GetMapping("/messages/{messageId")
+    @ResponseBody
+    public ResponseEntity<Message> getMessageByID(@PathVariable int messageID){
+        Message message = messageService.getMessageByMessageID(messageID);
+        return new ResponseEntity<>(message, HttpStatus.OK);
+    }
 
     //TODO: Process of deleting message by messageID
 

@@ -9,9 +9,15 @@ import java.util.List;
 
 @Service
 public class MessageService {
-    @Autowired
-    private MessageRepository messageRepository;
 
+    private final MessageRepository messageRepository;
+
+    @Autowired
+    public MessageService(MessageRepository messageRepository){
+        this.messageRepository = messageRepository;
+    }
+
+    //TODO: create message
     public Message createMessage(String Message_Text){
         if ((Message_Text.isBlank() == true || Message_Text.length() > 255)) return null;
         else{
@@ -19,7 +25,21 @@ public class MessageService {
         }
     }
 
-    public List<Message> getMessages (){
+    //TODO: retrive all messages
+    public List<Message> getAllMessages (){
         return messageRepository.findAll();
     }
+
+    //TODO: retrive a message by message ID
+    public Message getMessageByMessageID(int messageID){
+        return messageRepository.findById(messageID).orElse(null);
+    }
+
+    //TODO: delete message by message ID
+    public void deleteMessage(int messageID){
+        messageRepository.deleteById(messageID);
+    }
+
+    //TODO: update message bu message ID
+    
 }
