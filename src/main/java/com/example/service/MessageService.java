@@ -2,8 +2,10 @@ package com.example.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import com.example.repository.MessageRepository;
 import com.example.entity.Message;
+import com.example.entity.Account;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,10 +25,10 @@ public class MessageService {
         if ((messageText.isBlank() == true || messageText.length() > 255)) return null;
         else{
             Message message = new Message();
+            message.setPostedBy(message.getPostedBy());
             message.setMessageText(messageText);
-            message.getPostedBy();
-            message.getTimePostedEpoch();
-            return message;
+            message.setTimePostedEpoch(message.getTimePostedEpoch());
+            return messageRepository.save(message);
         }
     }
 
@@ -53,15 +55,20 @@ public class MessageService {
 
     //TODO: update message by message ID
     public int updateMessage(int messageID, String messageText){
+        if ((messageText.isBlank() || messageText.length() > 255)) return 0;
+
         Optional<Message> messageOpt = messageRepository.findById(messageID);
 
-        if ((messageText.isBlank() == true || messageText.length() > 255 || !messageOpt.isPresent())) return 0;
-        else if(messageOpt.isPresent()){
+        if(!messageOpt.isPresent()) return 0;
+        else {
             Message existingMessage = messageOpt.get();
             existingMessage.setMessageText(messageText);
             messageRepository.save(existingMessage);
             return 1;
         }
-        else return 0;
+    }
+
+    public List<Message> getMessagesByAccountID(int accountID){
+        return messageRepository.findBypostedBy(accountID);
     }
 }

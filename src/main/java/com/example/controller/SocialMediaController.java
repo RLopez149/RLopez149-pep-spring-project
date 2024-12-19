@@ -17,6 +17,7 @@ import com.example.service.AccountService;
 import com.example.service.MessageService;
 import com.example.entity.Message;
 
+
 import java.util.List;
 
 
@@ -40,12 +41,19 @@ public class SocialMediaController {
     //TODO: Process user login
 
     //TODO: Process creation of new mesage
+    @PostMapping("/messages")
+    @ResponseBody
+    public ResponseEntity <Message> postNewMessage(@RequestBody Message message){
+        Message newMesage = messageService.createMessage(message.getMessageText());
+        if(newMesage != null) return new ResponseEntity<>(message, HttpStatus.OK);
+        else return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
 
     //TODO: Process of getting all messages
     @GetMapping("/messages")
     @ResponseBody
     public ResponseEntity<List<Message>> getAllMessages(){
-        List<Message> messages =messageService.getAllMessages();
+        List<Message> messages = messageService.getAllMessages();
         return new ResponseEntity<>(messages, HttpStatus.OK);
     }
 
@@ -63,7 +71,7 @@ public class SocialMediaController {
     @ResponseBody
     public ResponseEntity<Integer> deleteMessageByID(@PathVariable int messageId){
         Integer rows = messageService.deleteMessage(messageId);
-        if (rows >= 1) return new ResponseEntity<>(rows, HttpStatus.OK);
+        if (rows > 0) return new ResponseEntity<>(rows, HttpStatus.OK);
         else return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -77,4 +85,10 @@ public class SocialMediaController {
     }
 
     //TODO: Process of getting all meassages by accountID
+    @GetMapping("/accounts/{accountId}/messages")
+    @ResponseBody
+    public ResponseEntity<List<Message>> getMessagesByAccountID(@PathVariable int accountId){
+        List<Message> messages = messageService.getMessagesByAccountID(accountId);
+        return new ResponseEntity<>(messages, HttpStatus.OK);
+    }
 }
