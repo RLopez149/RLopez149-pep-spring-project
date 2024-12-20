@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 
 import com.example.repository.MessageRepository;
 import com.example.entity.Message;
-import com.example.entity.Account;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,14 +20,16 @@ public class MessageService {
     }
 
     //TODO: create message
-    public Message createMessage(String messageText){
-        if ((messageText.isBlank() || messageText.length() > 255)) return null;
+    public Message createMessage(Message message){
+        if ((message.getMessageText().isBlank() || message.getMessageText().length() > 255)) return null;
         else{
             Message newMessage = new Message();
-            newMessage.getPostedBy();
-            newMessage.setMessageText(messageText);
-            newMessage.getTimePostedEpoch();
-            return messageRepository.save(newMessage);
+            newMessage.setPostedBy(message.getPostedBy());
+            newMessage.setMessageText(message.getMessageText());
+            newMessage.setTimePostedEpoch(message.getTimePostedEpoch());
+            Message savedMessage = messageRepository.save(newMessage);
+            
+            return savedMessage;
         }
     }
 
@@ -54,18 +55,18 @@ public class MessageService {
     }
 
     //TODO: update message by message ID
-    public int updateMessage(int messageID, String messageText){
-        if ((messageText.isBlank() || messageText.length() > 255)) return 0;
+    public int updateMessage(int messageID, Message message){
+        if ((message.getMessageText().isBlank() || message.getMessageText().length() > 255)) return 0;
+        else {
+            Message upMessage = messageRepository.findBymessageId(messageID);
 
-        Optional<Message> messageOpt = messageRepository.findById(messageID);
-
-        if(messageOpt.isPresent()){
-            Message existingMessage = messageOpt.get();
-            existingMessage.setMessageText(messageText);
-            messageRepository.save(existingMessage);
-            return 1;
-        } 
-        else return 0;
+            if(upMessage != null){
+                upMessage.setMessageText(message.getMessageText());
+                messageRepository.save(upMessage);
+                return 1;
+            } 
+            else return 0;
+        }
     }
 
     //TODO: get list of messages by account ID

@@ -62,8 +62,8 @@ public class SocialMediaController {
     public ResponseEntity<Message> postNewMessage(@RequestBody Message message){
         if (accountService.checkForId(message.getPostedBy()) == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         else{
-            Message newMesage = messageService.createMessage(message.getMessageText());
-            if(newMesage != null) return new ResponseEntity<>(message, HttpStatus.OK);
+            Message newMessage = messageService.createMessage(message);
+            if(newMessage != null) return new ResponseEntity<>(newMessage, HttpStatus.OK);
             else return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
@@ -98,7 +98,7 @@ public class SocialMediaController {
     @PutMapping("/messages/{messageId}")
     @ResponseBody
     public ResponseEntity<Integer> putMessageByID(@PathVariable int messageId, @RequestBody Message message){
-        int rows = messageService.updateMessage(messageId, message.getMessageText());
+        int rows = messageService.updateMessage(messageId, message);
         if (rows > 0) return new ResponseEntity<>(rows, HttpStatus.OK);
         else return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
