@@ -58,12 +58,13 @@ public class MessageService {
     public int updateMessage(int messageID, Message message){
         if ((message.getMessageText().isBlank() || message.getMessageText().length() > 255)) return 0;
         else {
-            Message upMessage = messageRepository.findBymessageId(messageID);
-
-            if(upMessage != null){
-                upMessage.setMessageText(message.getMessageText());
-                messageRepository.save(upMessage);
-                return 1;
+            Optional<Message> opMessage = messageRepository.findById(messageID);
+            if(opMessage.isPresent()){
+            Message upMessage = opMessage.get();
+            upMessage.setMessageText(message.getMessageText());
+            messageRepository.save(upMessage);
+            System.out.println("Message with ID " + messageID + " updated successfully.");
+            return 1;
             } 
             else return 0;
         }

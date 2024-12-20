@@ -5,9 +5,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -95,11 +95,11 @@ public class SocialMediaController {
     }
 
     //TODO: Process of updating message by messageID
-    @PutMapping("/messages/{messageId}")
+    @PatchMapping("/messages/{messageId}")
     @ResponseBody
     public ResponseEntity<Integer> putMessageByID(@PathVariable int messageId, @RequestBody Message message){
         int rows = messageService.updateMessage(messageId, message);
-        if (rows > 0) return new ResponseEntity<>(rows, HttpStatus.OK);
+        if (rows == 1) return new ResponseEntity<>(rows, HttpStatus.OK);
         else return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
