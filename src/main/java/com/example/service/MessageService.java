@@ -22,13 +22,13 @@ public class MessageService {
 
     //TODO: create message
     public Message createMessage(String messageText){
-        if ((messageText.isBlank() == true || messageText.length() > 255)) return null;
+        if ((messageText.isBlank() || messageText.length() > 255)) return null;
         else{
-            Message message = new Message();
-            message.setPostedBy(message.getPostedBy());
-            message.setMessageText(messageText);
-            message.setTimePostedEpoch(message.getTimePostedEpoch());
-            return messageRepository.save(message);
+            Message newMessage = new Message();
+            newMessage.getPostedBy();
+            newMessage.setMessageText(messageText);
+            newMessage.getTimePostedEpoch();
+            return messageRepository.save(newMessage);
         }
     }
 
@@ -59,15 +59,16 @@ public class MessageService {
 
         Optional<Message> messageOpt = messageRepository.findById(messageID);
 
-        if(!messageOpt.isPresent()) return 0;
-        else {
+        if(messageOpt.isPresent()){
             Message existingMessage = messageOpt.get();
             existingMessage.setMessageText(messageText);
             messageRepository.save(existingMessage);
             return 1;
-        }
+        } 
+        else return 0;
     }
 
+    //TODO: get list of messages by account ID
     public List<Message> getMessagesByAccountID(int accountID){
         return messageRepository.findBypostedBy(accountID);
     }

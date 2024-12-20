@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.service.AccountService;
 import com.example.service.MessageService;
+import com.example.entity.Account;
 import com.example.entity.Message;
 
 
@@ -37,16 +38,34 @@ public class SocialMediaController {
     private MessageService messageService;
 
     //TODO: Process new user resgestration
+    @PostMapping("/register")
+    @ResponseBody
+    public ResponseEntity<Account> postNewAccount(@RequestBody Account account){
+        if(accountService.checkForUsername(account.getUsername()) != null) return new ResponseEntity<>(HttpStatus.CONFLICT);
+        Account newAccount = accountService.registerAccount(account.getUsername(), account.getPassword());
+        if(newAccount != null) return new ResponseEntity<>(newAccount, HttpStatus.OK);
+        else return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
 
     //TODO: Process user login
+    @PostMapping("/login")
+    @ResponseBody
+    public ResponseEntity<Account> postLogin (@RequestBody Account account){
+        Account login = accountService.loginAccount(account.getUsername(), account.getPassword());
+        if(login == null) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        else return new ResponseEntity<>(login, HttpStatus.OK);
+    }
 
     //TODO: Process creation of new mesage
     @PostMapping("/messages")
     @ResponseBody
-    public ResponseEntity <Message> postNewMessage(@RequestBody Message message){
-        Message newMesage = messageService.createMessage(message.getMessageText());
-        if(newMesage != null) return new ResponseEntity<>(message, HttpStatus.OK);
-        else return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    public ResponseEntity<Message> postNewMessage(@RequestBody Message message){
+        if (accountService.checkForId(message.getPostedBy()) == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        else{
+            Message newMesage = messageService.createMessage(message.getMessageText());
+            if(newMesage != null) return new ResponseEntity<>(message, HttpStatus.OK);
+            else return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
     //TODO: Process of getting all messages
